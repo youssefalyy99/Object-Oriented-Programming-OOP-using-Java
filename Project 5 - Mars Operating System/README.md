@@ -102,7 +102,7 @@ A simplified class diagram showing the main members and relationships. It is wri
 
 **Reading the diagram:** hollow triangle = inheritance, filled diamond = composition, hollow diamond = aggregation, plain arrow = association or dependency.
 
-<img src="https://raw.githubusercontent.com/youssefalyy99/Object-Oriented-Programming-OOP-using-Java/main/Project%205%20-%20Mars%20Operating%20System/UMLClassDiagram.svg" alt="MARS-OPS class diagram" width="100%">
+<img src="https://raw.githubusercontent.com/youssefalyy99/Object-Oriented-Programming-OOP-using-Java/main/Project%205%20-%20Mars%20Operating%20System/UMLClassDiagram.svg" alt="MARS-OPS class diagram" height = "100%" width="100%">
 
 ## 5. Class Reference
 

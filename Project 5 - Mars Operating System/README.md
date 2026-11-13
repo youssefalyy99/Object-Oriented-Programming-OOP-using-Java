@@ -7,10 +7,10 @@ Computer and Communication Engineering | Programming II | Fall 2026, Lab 5
 
 | Name | ID |
 |---|---|
+| Youssef Aly Mahmoud | 10094 |
 | Belal Mohamed Ahmed | 9852 |
 | Mohamed Ahmed Elsayed | 9986 |
 | Youssef Khalid Galal | 10090 |
-| Youssef Aly Mahmoud | 10094 |
 
 ---
 
@@ -55,7 +55,7 @@ The design goal is that **objects collaborate**: no single class holds all the l
 
 ```
 StudentID-Prog-II-Lab5/
-├── lab5/                          all Java source files (package lab5)
+├── Project 5 Files/                          all Java source files (package lab5)
 │   ├── Agent.java                 abstract: root of crew and robots
 │   ├── CrewMember.java            abstract
 │   ├── Scientist.java
@@ -89,303 +89,19 @@ StudentID-Prog-II-Lab5/
 │   ├── Colony.java                coordinator
 │   ├── Simulation.java            advances time
 │   └── main.java                  test driver (entry point)
-├── uml/                           MARS-OPS-UML.drawio and exported PDF/PNG
+├── class-diagram.mermaid
+├── UMLClassDiagram.svg
 └── README.md
 ```
 
 ## 4. Class Diagram
 
-A simplified class diagram showing the main members and relationships. It renders automatically on GitHub. The full set of UML diagrams (object, state machine, sequence, use case) is in `uml/MARS-OPS-UML.drawio` (open with [draw.io](https://app.diagrams.net)).
+A simplified class diagram showing the main members and relationships. It is written in Mermaid, so it renders automatically on GitHub and in any Markdown viewer with Mermaid support. The Mermaid source is saved in class-diagram.mermaid, and a pre-rendered copy is in UMLClassDiagram.html (just double-click it to open it in a browser). To edit the diagram or export it as PNG/SVG, paste the source into mermaid.live. The mission lifecycle state diagram in section 9.2 is also written in Mermaid.
 
-```mermaid
-classDiagram
-direction TB
 
-%% ---------- Agents ----------
-class Agent {
-    <<abstract>>
-    -String Name
-    -int id
-    -boolean availability
-    -String currentLocation
-    +canPerform(Mission) boolean
-    +canHandle(Emergency) boolean
-    +isUsable() boolean
-    +isReady() boolean
-    +canOperateIn(Environment) boolean
-    +onMissionStart(Mission)
-    +update()
-    +getStatusSummary() String
-}
-class CrewMember {
-    <<abstract>>
-    -List~String~ skills
-    -int fatigueLevel
-    -int healthStatus
-    +heal(int)
-    +damage(int)
-    +increaseFatigue(int)
-    +decreaseFatigue(int)
-}
-class Scientist {
-    +conductResearch(Laboratory)
-}
-class Engineer {
-    +extinguishLabFire(Laboratory)
-    +sealHabitatLeak(Habitat)
-    +setLinkComm(CommunicationStation)
-}
-class MedicalOfficer {
-    +treat(CrewMember)
-}
-class Robot {
-    <<abstract>>
-    -int batteryLevel
-    -int batteryDrainPerUnit
-    -HealthStatus healthStatus
-    +drainBattery(int)
-    +recharge(int)
-    +hasEnoughBattery(int) boolean
-    +damage()
-    +repair()
-}
-class ExplorationRover {
-    -int carryCapacity
-    +loadEquipment(Equipment) boolean
-    +unloadEquipment(Equipment) boolean
-    +explore(String)
-    +breakDown()
-}
-class RepairRobot {
-    -int sparePartsPerRepair
-    -int batteryPerRepair
-    +performRepair(Facility) boolean
-}
-class Drone {
-    -int flightRange
-    -boolean remoteControlled
-    +performReconnaissance(String)
-}
-
-Agent <|-- CrewMember
-Agent <|-- Robot
-CrewMember <|-- Scientist
-CrewMember <|-- Engineer
-CrewMember <|-- MedicalOfficer
-Robot <|-- ExplorationRover
-Robot <|-- RepairRobot
-Robot <|-- Drone
-
-%% ---------- Facilities ----------
-class Facility {
-    <<abstract>>
-    #String id
-    #String name
-    #String status
-    +Resources R1
-    +addResource(String, double)
-    +isOperational() Boolean
-}
-class Habitat {
-    -boolean leaking
-    +applyOxygenLeak(double)
-    +sealLeak()
-}
-class Laboratory {
-    -boolean onFire
-    +catchFire()
-    +extinguishFire()
-    +hasEquipment(String) boolean
-}
-class PowerStation {
-    +GeneratePower(double)
-    +GenerateFuel(double)
-}
-class CommunicationStation {
-    -boolean linkActive
-    +setLink(boolean)
-}
-class Resources {
-    -double oxygen
-    -double water
-    -double food
-    -double fuel
-    -double power
-    -double medicalSupplies
-    -double spareParts
-    +AddResources(String, double)
-    +RemoveResources(String, double) boolean
-    +AddRequirement(String, double)
-}
-
-Facility <|-- Habitat
-Facility <|-- Laboratory
-Facility <|-- PowerStation
-Facility <|-- CommunicationStation
-Facility *-- Resources : R1
-
-%% ---------- Equipment ----------
-class Equipment {
-    -int id
-    -String name
-    -EquipmentType type
-    -EquipmentCondition condition
-    +damage()
-    +destroy()
-    +repair()
-    +isUsable() boolean
-}
-class EquipmentType {
-    <<enumeration>>
-    SCIENTIFIC
-    EXPLORATION
-    REPAIR
-}
-class EquipmentCondition {
-    <<enumeration>>
-    WORKING
-    DAMAGED
-    DESTROYED
-}
-ExplorationRover o-- Equipment
-Equipment --> EquipmentType
-Equipment --> EquipmentCondition
-
-%% ---------- Missions ----------
-class Mission {
-    <<abstract>>
-    -int id
-    -String name
-    -MissionType type
-    -int duration
-    -int progress
-    -MissionStatus state
-    -String failureReason
-    -int minBattery
-    +assignAgents(List~Agent~) boolean
-    +startMission()
-    +advanceTime()
-    +complete()
-    +failMission(String)
-    +canStartIn(Environment) boolean
-}
-class Exploration {
-    -String region
-    +execute(Colony) boolean
-}
-class RepairMission {
-    +getTarget() Facility
-}
-class RescueMission {
-    -Agent strandedEntity
-}
-class Research {
-    -String experimentName
-    -List~String~ requiredLabEquipment
-}
-class MissionType {
-    <<enumeration>>
-    EXPLORATION
-    REPAIR
-    RESEARCH
-    RESCUE
-}
-class MissionStatus {
-    <<enumeration>>
-    PENDING
-    ASSIGNED
-    IN_PROGRESS
-    COMPLETED
-    FAILED
-}
-
-Mission <|-- Exploration
-Mission <|-- RepairMission
-Mission <|-- RescueMission
-Mission <|-- Research
-Mission --> MissionType
-Mission --> MissionStatus
-Mission --> Resources : resourceRequest
-Mission --> "0..*" Agent : assignedAgents
-Mission --> "0..*" Facility : targetFacilities
-RescueMission --> Agent : strandedEntity
-Exploration ..> EquipmentType : requires
-
-%% ---------- Emergencies ----------
-class Emergency {
-    -int id
-    -EmergencyType type
-    -EmergencyStatus status
-    -double oxygenLoss
-    -String unresolvedReason
-    +dispatch(List~Agent~) boolean
-    +resolve()
-    +markUnresolved(String)
-}
-class EmergencyType {
-    <<enumeration>>
-    OXYGEN_LEAK
-    FIRE
-    ROVER_BREAKDOWN
-    MEDICAL_EMERGENCY
-}
-class EmergencyStatus {
-    <<enumeration>>
-    ACTIVE
-    RESOLVED
-    UNRESOLVED
-}
-Emergency --> EmergencyType
-Emergency --> EmergencyStatus
-Emergency --> Facility : affectedFacility
-Emergency --> "0..*" Agent : responders
-
-%% ---------- Environment ----------
-class Environment {
-    -EnvironmentCondition condition
-    +isDustStorm() boolean
-    +isCommunicationDisrupted() boolean
-    +isNormal() boolean
-}
-class EnvironmentCondition {
-    <<enumeration>>
-    NORMAL
-    DUST_STORM
-    COMMUNICATION_DISRUPTION
-}
-class HealthStatus {
-    <<enumeration>>
-    OPERATIONAL
-    DAMAGED
-    DESTROYED
-}
-Environment --> EnvironmentCondition
-Robot --> HealthStatus
-
-%% ---------- Coordination ----------
-class Colony {
-    -Mission activeMission
-    +addAgent(Agent) boolean
-    +addFacility(Facility) boolean
-    +submitMission(Mission, List~Agent~) boolean
-    +handleEmergency(Emergency) boolean
-    +getColonyTotal(String) double
-    +advanceTime()
-    +getStatusReport() String
-}
-class Simulation {
-    +advanceTime(int)
-}
-
-Colony *-- Environment
-Colony o-- "0..*" Agent
-Colony o-- "0..*" Facility
-Colony o-- "0..*" Mission : missionHistory
-Colony o-- "0..*" Emergency : emergencyHistory
-Simulation --> Colony
-```
 
 **Reading the diagram:** hollow triangle = inheritance, filled diamond = composition, hollow diamond = aggregation, plain arrow = association or dependency.
+![MARS-OPS class diagram](class-diagram.svg)
 
 ## 5. Class Reference
 
